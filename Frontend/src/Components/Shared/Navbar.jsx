@@ -1,41 +1,110 @@
-import React from 'react';
-import { FaHome } from 'react-icons/fa';
-import { Link, NavLink } from 'react-router';
-import Logo from './Logo';
+import React from "react";
+import { FaHome } from "react-icons/fa";
+import { Link, NavLink } from "react-router";
+import Logo from "./Logo";
+import useAuth from "../../Hooks/useAuth";
+import SwiftAlert from "../../utils/alerts/SwiftAlert";
+
 
 const Navbar = () => {
-    const links = <>
-        <li>
-            <NavLink to="/">
-                <FaHome></FaHome>
-                Home
-            </NavLink>
-        </li>
-    </>
+    const { user, logOut } = useAuth();
+    const handleLogOut = () => {
+        logOut()
+            .then(() => {
+                SwiftAlert({
+                    title: "LogOut successful",
+                    text: " "
+                })
+            })
+    }
+    const links = (
+        <>
+            <li>
+                <NavLink
+                    to="/"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:text-primary hover:bg-base-200 mr-2"
+                >
+                    <FaHome /> Home
+                </NavLink>
+            </li>
+            <li>
+                <NavLink
+                    to="/dashboard"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:text-primary hover:bg-base-200 mr-2"
+                >
+                    <FaHome /> Dashboard
+                </NavLink>
+            </li>
+        </>
+    );
+
     return (
-        <div className="navbar bg-base-100 shadow-sm">
+        <div className="navbar bg-base-100 shadow-sm px-4">
+            {/* Left Section */}
             <div className="navbar-start">
+                {/* Mobile Menu */}
                 <div className="dropdown">
-                    <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /> </svg>
+                    <div
+                        tabIndex={0}
+                        role="button"
+                        className="btn btn-ghost lg:hidden"
+                    >
+                        ☰
                     </div>
                     <ul
-                        tabIndex="-1"
-                        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                        tabIndex={0}
+                        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-100 mt-3 w-52 p-2 shadow"
+                    >
                         {links}
                     </ul>
                 </div>
-                <a className="text-xl">
-                    <Logo/>
-                </a>
+
+                <Link to="/" className="text-xl font-bold">
+                    <Logo />
+                </Link>
             </div>
+
+            {/* Desktop Links */}
             <div className="navbar-center hidden lg:flex">
-                <ul className="menu menu-horizontal px-1">
-                    {links}
-                </ul>
+                <ul className="menu menu-horizontal px-1">{links}</ul>
             </div>
-            <div className="navbar-end">
-                <Link to="/auth/login">Login</Link>
+
+            {/* Right Section */}
+            <div className="navbar-end flex items-center gap-4">
+                {user ? (
+                    <div className="dropdown dropdown-end pr-3">
+                        <div tabIndex={0} role="button" className="flex items-center tooltip tooltip-bottom" data-tip={`${user.displayName}`}>
+                            <img
+                                className="w-11 h-11 rounded-full border border-base-300 object-cover hover:opacity-90 transition"
+                                src={user.photoURL || "https://i.ibb.co.com/BKZZLqwM/default-Logo.jpg"}
+                                alt="user"
+                            />
+                        </div>
+                        <ul
+                            tabIndex={0}
+                            className={`menu dropdown-content bg-base-100 rounded-xl w-48 p-2 shadow-md mt-3 border border-base-200`}
+                        >
+                            <li>
+                                <button className="font-medium">Profile</button>
+                            </li>
+                            <li>
+                                <button className="font-medium">Dashboard</button>
+                            </li>
+                            <li>
+                                <button onClick={handleLogOut} className="text-red-500 font-semibold">
+                                    Logout
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                ) : (
+                    <Link
+                        to="/auth/login"
+                        className="btn rounded-xl font-semibold my-gradient text-white hover-gradient"
+                    >
+                        Login
+                    </Link>
+                )}
             </div>
         </div>
     );
