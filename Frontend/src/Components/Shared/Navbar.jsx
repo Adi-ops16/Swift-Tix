@@ -4,6 +4,8 @@ import { Link, NavLink } from "react-router";
 import Logo from "./Logo";
 import useAuth from "../../Hooks/useAuth";
 import SwiftAlert from "../../utils/alerts/SwiftAlert";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { IoTicketOutline } from "react-icons/io5";
 
 
 const Navbar = () => {
@@ -29,10 +31,18 @@ const Navbar = () => {
             </li>
             <li>
                 <NavLink
+                    to="/all-tickets"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:text-primary hover:bg-base-200 mr-2"
+                >
+                    <IoTicketOutline /> All Tickets
+                </NavLink>
+            </li>
+            <li>
+                <NavLink
                     to="/dashboard"
                     className="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:text-primary hover:bg-base-200 mr-2"
                 >
-                    <FaHome /> Dashboard
+                    <LuLayoutDashboard /> Dashboard
                 </NavLink>
             </li>
         </>
@@ -86,9 +96,6 @@ const Navbar = () => {
                         >
                             <li>
                                 <button className="font-medium">Profile</button>
-                            </li>
-                            <li>
-                                <button className="font-medium">Dashboard</button>
                             </li>
                             <li>
                                 <button onClick={handleLogOut} className="text-red-500 font-semibold">
