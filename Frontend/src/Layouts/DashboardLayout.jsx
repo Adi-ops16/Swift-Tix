@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Outlet } from "react-router";
+import { Link, Outlet } from "react-router";
 import { motion } from "framer-motion";
 import SideBar from "../Components/sidebar/SideBar";
 import Logo from "../Components/Shared/Logo";
+import { FaHome } from "react-icons/fa";
 
 const DashboardLayout = () => {
 
@@ -36,12 +37,14 @@ const DashboardLayout = () => {
             >
                 <header className="h-16 hidden lg:flex w-full items-center justify-between px-4 border-b border-base-200 bg-base-200">
                     <div className="flex items-center gap-3">
-                        <div className="text-sm font-semibold">
+                        <Link to="/" className="text-sm font-semibold">
                             <Logo />
-                        </div>
+                        </Link>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button className="btn btn-ghost">Help</button>
+                        <Link to="/" className="btn text-primary border-primary">
+                            <FaHome></FaHome> Home
+                        </Link>
                     </div>
                 </header>
 

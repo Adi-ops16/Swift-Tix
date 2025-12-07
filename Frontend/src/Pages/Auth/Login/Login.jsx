@@ -21,7 +21,6 @@ const Login = () => {
 
     const location = useLocation()
     const navigate = useNavigate()
-    // console.log(location)
 
     const onSubmit = async (data) => {
         try {
@@ -34,6 +33,7 @@ const Login = () => {
                         title: "Welcome Back",
                         text: "Login successful",
                     })
+                    navigate(location.state || "/")
                 })
         }
         catch (err) {
@@ -142,12 +142,13 @@ const Login = () => {
                     </div>
 
                     {/* Google Login */}
-                    <GoogleLogin title="Login" />
+                    <GoogleLogin title="Login" state={location.state} />
 
                     {/* Register Link */}
                     <p className="mt-5 text-center text-sm">
                         Don't have an account?{" "}
                         <Link
+                            state={location.state}
                             to="/auth/register"
                             className="font-bold text-primary underline hover:opacity-80"
                         >

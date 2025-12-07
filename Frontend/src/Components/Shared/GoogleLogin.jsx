@@ -3,16 +3,20 @@ import useAuth from '../../Hooks/useAuth';
 import SwiftAlert from '../../utils/alerts/SwiftAlert';
 import SmallLoader from '../Loading/smallLoader';
 import useAxios from '../../Hooks/useAxios'
+import { useNavigate } from 'react-router';
 
-const GoogleLogin = ({ title }) => {
+const GoogleLogin = ({ title, state }) => {
     const [isPending, setIsPending] = useState(false)
     const { signInWithGoogle, setUser } = useAuth()
 
     const axios = useAxios()
 
+    const navigate = useNavigate()
+
     const handleSignIn = () => {
         setIsPending(true)
         signInWithGoogle()
+
 
             .then(async res => {
 
@@ -35,6 +39,8 @@ const GoogleLogin = ({ title }) => {
 
                 setUser(res.user)
                 setIsPending(false)
+
+                navigate(state || "/")
             })
             .catch(err => {
                 console.log(err)

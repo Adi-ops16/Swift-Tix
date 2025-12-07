@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import GoogleLogin from '../../../Components/Shared/GoogleLogin';
 import { useForm } from 'react-hook-form';
 import registerAnimation from '../../../animations/register.json';
@@ -13,7 +13,10 @@ import SmallLoader from '../../../Components/Loading/smallLoader';
 const Register = () => {
     const [isPending, setIsPending] = useState(false)
     const axios = useAxios()
-    const { createUser, setUser, updateUserInfo } = useAuth()
+    const { createUser, setUser, updateUserInfo, setLoading } = useAuth()
+    const location = useLocation()
+    console.log(location)
+    const navigate = useNavigate()
     const {
         register,
         handleSubmit,
@@ -85,6 +88,10 @@ const Register = () => {
 
                             // update the user data
                             updateUserInfo(updatedInfo)
+
+                            setLoading(false)
+
+                            navigate(location.state || "/")
                         })
 
                 })
@@ -219,7 +226,7 @@ const Register = () => {
                         <div className="flex-1 h-px bg-base-300"></div>
                     </div>
 
-                    <GoogleLogin title="Sign Up" />
+                    <GoogleLogin title="Sign Up" state={location.state} />
 
                     <p className="mt-5 text-center text-sm">
                         Already have an account?{" "}
