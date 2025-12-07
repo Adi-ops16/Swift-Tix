@@ -11,6 +11,7 @@ import DashboardHome from "../Pages/dashboard/DashboardHome";
 import Profile from "../Pages/dashboard/profile/Profile";
 import VendorRoute from "./VendorRoute";
 import AddTicket from "../Pages/dashboard/add-ticket/AddTicket";
+import AddedTickets from "../Pages/dashboard/added-tickets/AddedTickets";
 
 export const router = createBrowserRouter([
     {
@@ -62,6 +63,12 @@ export const router = createBrowserRouter([
                 path: 'add-ticket',
                 element: <VendorRoute>
                     <AddTicket></AddTicket>
+                </VendorRoute>
+            },
+            {
+                path: 'added-tickets',
+                element: <VendorRoute>
+                    <AddedTickets></AddedTickets>
                 </VendorRoute>
             },
         ]

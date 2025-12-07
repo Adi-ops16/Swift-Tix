@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const port = process.env.PORT || 3000
 
@@ -64,14 +64,19 @@ async function run() {
 
         const db = client.db("Swift_Tix_DB")
         const usersCollection = db.collection('users')
+        const ticketsCollection = db.collection('tickets')
 
         // get role
         app.get('/role', verifyFbToken, async (req, res) => {
-            const email = req.query.email
-            const query = { email: email }
-            const result = await usersCollection.findOne(query, { projection: { role: 1 } })
+            try {
+                const email = req.query.email
+                const query = { email: email }
+                const result = await usersCollection.findOne(query, { projection: { role: 1 } })
 
-            res.send({ role: result.role || 'user' })
+                res.send({ role: result.role || 'user' })
+            } catch (err) {
+                res.status(500).send({ message: "couldn't get role", err })
+            }
         })
 
 
@@ -112,8 +117,66 @@ async function run() {
         })
 
         // ticket related apis
-        app.post('/tickets', async (req, res) => {
-            const ticketInfo = req.body
+
+        app.get('/tickets', async (req, res) => {
+            try {
+                const { email } = req.query
+                const query = { vendorEmail: email }
+
+                const result = await ticketsCollection.find(query).toArray()
+                res.status(200).send(result)
+            } catch (err) {
+                res.status(500).json({ message: "Couldn't get tickets", err })
+            }
+        })
+
+        app.post('/tickets', verifyFbToken, async (req, res) => {
+            try {
+                const ticketInfo = req.body;
+                ticketInfo.verification_status = 'pending'
+
+                const result = await ticketsCollection.insertOne(ticketInfo)
+
+                res.send(result)
+            } catch (err) {
+                res.status(500).send({ message: "Couldn't post the tickets", err })
+            }
+        })
+
+        app.patch('/tickets/update/:id', async (req, res) => {
+            try {
+                const { id } = req.params
+                const ticketInfo = req.body;
+
+                const query = { _id: new ObjectId(id) }
+                const updatedDoc = {
+                    $set: {
+                        ...ticketInfo,
+                        verification_status: 'pending'
+                    }
+                }
+
+                const result = await ticketsCollection.updateOne(query, updatedDoc)
+
+                res.status(200).send(result)
+
+            } catch (err) {
+                res.status(500).json({ message: "Couldn't update tickets", err })
+            }
+        })
+
+        app.delete('/tickets/delete/:id', async (req, res) => {
+            try {
+                const { id } = req.params;
+                const result = await ticketsCollection.deleteOne({
+                    _id: new ObjectId(id)
+                })
+
+                res.status(200).send(result)
+
+            } catch (err) {
+                res.status(500).send({ message: "Couldn't delete ticket", err })
+            }
         })
 
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { NavLink } from "react-router";
 import { FaThLarge, FaUser, FaSignOutAlt } from "react-icons/fa";
 import { IoTicket } from "react-icons/io5";
+import { LuTicketPlus } from "react-icons/lu";
 import { motion } from "framer-motion";
 import useAuth from "../../Hooks/useAuth";
 import Logo from "../Shared/Logo";
@@ -19,7 +20,8 @@ const SideBar = ({ isExpanded, setIsExpanded }) => {
         { to: "/dashboard/profile", label: "My Profile", icon: <FaUser /> },
 
         ...role === 'vendor' ? [
-            { to: "/dashboard/add-ticket", label: "Add tickets", icon: <IoTicket /> }
+            { to: "/dashboard/add-ticket", label: "Add tickets", icon: <IoTicket /> },
+            { to: "/dashboard/added-tickets", label: "My added tickets", icon: <LuTicketPlus /> }
         ] : []
     ];
 
