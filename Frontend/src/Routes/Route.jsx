@@ -9,6 +9,8 @@ import AllTickets from "../Pages/All-tickets/AllTickets";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import DashboardHome from "../Pages/dashboard/DashboardHome";
 import Profile from "../Pages/dashboard/profile/Profile";
+import VendorRoute from "./VendorRoute";
+import AddTicket from "../Pages/dashboard/add-ticket/AddTicket";
 
 export const router = createBrowserRouter([
     {
@@ -54,6 +56,13 @@ export const router = createBrowserRouter([
             {
                 path: 'profile',
                 Component: Profile
+            },
+            // Pages for Vendors
+            {
+                path: 'add-ticket',
+                element: <VendorRoute>
+                    <AddTicket></AddTicket>
+                </VendorRoute>
             },
         ]
     }

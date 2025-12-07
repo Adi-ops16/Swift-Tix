@@ -1,17 +1,25 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router";
 import { FaThLarge, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { IoTicket } from "react-icons/io5";
 import { motion } from "framer-motion";
 import useAuth from "../../Hooks/useAuth";
 import Logo from "../Shared/Logo";
+import useRole from "../../Hooks/useRole";
 
 const SideBar = ({ isExpanded, setIsExpanded }) => {
     const { user, logOut } = useAuth();
     const [mobileOpen, setMobileOpen] = useState(false);
 
+    const { role } = useRole()
+
     const menu = [
         { to: "/dashboard", label: "Dashboard", icon: <FaThLarge /> },
         { to: "/dashboard/profile", label: "My Profile", icon: <FaUser /> },
+
+        ...role === 'vendor' ? [
+            { to: "/dashboard/add-ticket", label: "Add tickets", icon: <IoTicket /> }
+        ] : []
     ];
 
     return (
@@ -69,7 +77,7 @@ const SideBar = ({ isExpanded, setIsExpanded }) => {
                             <div>
                                 <div className="font-medium">{user?.displayName}</div>
                                 <div className="text-xs text-base-content/60">
-                                    Role: {user?.role || "user"}
+                                    Role: {role || "user"}
                                 </div>
                             </div>
                         )}
