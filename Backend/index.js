@@ -1,12 +1,50 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
 const cors = require('cors');
-require('dotenv').config()
 const app = express()
+const { MongoClient, ServerApiVersion } = require('mongodb');
+require('dotenv').config()
 const port = process.env.PORT || 3000
+
+// firebase service account
+const admin = require("firebase-admin");
+
+const decoded = Buffer.from(process.env.FIREBASE_ADMIN_KEY, 'base64').toString('utf8')
+const serviceAccount = JSON.parse(decoded);
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 
 app.use(cors())
 app.use(express.json())
+
+// verify FB token
+const verifyFbToken = async (req, res, next) => {
+    const authorization = req.headers.authorization;
+
+    if (!authorization) {
+        return res.status(401).json({
+            message: "Unauthorized access"
+        })
+    }
+    const token = authorization.split(" ")[1]
+
+    if (!token) {
+        return res.status(401).json({
+            message: "Unauthorized access"
+        })
+    }
+
+    try {
+        const decoded = await admin.auth().verifyIdToken(token)
+        req.decoded_email = decoded.email
+        next()
+    } catch {
+        return res.status(401).json({
+            message: "Unauthorized access"
+        })
+    }
+}
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@personal-hero.gxzvpbe.mongodb.net/?appName=Personal-Hero`;
 
@@ -26,6 +64,15 @@ async function run() {
 
         const db = client.db("Swift_Tix_DB")
         const usersCollection = db.collection('users')
+
+        // get role
+        app.get('/role', verifyFbToken, async (req, res) => {
+            const email = req.query.email
+            const query = { email: email }
+            const result = await usersCollection.findOne(query, { projection: { role: 1 } })
+
+            res.send({ role: result.role || 'user' })
+        })
 
         app.get('/', (req, res) => {
             res.send('Swift-Tix server is working')
