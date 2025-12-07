@@ -74,6 +74,7 @@ async function run() {
             res.send({ role: result.role || 'user' })
         })
 
+
         app.get('/', (req, res) => {
             res.send('Swift-Tix server is working')
         })
@@ -108,6 +109,11 @@ async function run() {
             catch (err) {
                 res.send("error while creating user in DB", err)
             }
+        })
+
+        // ticket related apis
+        app.post('/tickets', async (req, res) => {
+            const ticketInfo = req.body
         })
 
 
