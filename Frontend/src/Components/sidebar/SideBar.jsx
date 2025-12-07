@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import useAuth from "../../Hooks/useAuth";
 import Logo from "../Shared/Logo";
 import useRole from "../../Hooks/useRole";
+import SwiftAlert from "../../utils/alerts/SwiftAlert";
 
 const SideBar = ({ isExpanded, setIsExpanded }) => {
     const { user, logOut } = useAuth();
@@ -21,6 +22,19 @@ const SideBar = ({ isExpanded, setIsExpanded }) => {
             { to: "/dashboard/add-ticket", label: "Add tickets", icon: <IoTicket /> }
         ] : []
     ];
+
+
+    const handleLogOut = () => {
+        console.log("log out button clicked")
+        setMobileOpen(false)
+        logOut()
+            .then(() => {
+                SwiftAlert({
+                    title: "LogOut successful",
+                    text: " "
+                })
+            })
+    }
 
     return (
         <>
@@ -84,7 +98,7 @@ const SideBar = ({ isExpanded, setIsExpanded }) => {
                     </div>
 
                     <button
-                        onClick={logOut}
+                        onClick={handleLogOut}
                         className="btn btn-ghost w-full mt-3 flex items-center gap-3 justify-start"
                     >
                         <FaSignOutAlt />
@@ -143,10 +157,7 @@ const SideBar = ({ isExpanded, setIsExpanded }) => {
 
                     <button
                         className="btn btn-outline w-full mt-6"
-                        onClick={() => {
-                            logOut();
-                            setMobileOpen(false);
-                        }}
+                        onClick={handleLogOut}
                     >
                         Logout
                     </button>

@@ -50,7 +50,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-100px)] flex flex-col-reverse md:flex-row items-center justify-center px-6 gap-6 md:gap-10">
+        <div className="min-h-[calc(100vh-100px)] flex flex-col md:flex-row items-center justify-center px-6 gap-6 md:gap-10">
 
             <div className="w-full md:w-1/2 flex justify-center items-center">
                 <Lottie

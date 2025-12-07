@@ -9,14 +9,15 @@ import useAuth from '../../../Hooks/useAuth';
 import SwiftAlert from '../../../utils/alerts/SwiftAlert';
 import Logo from '../../../Components/Shared/Logo';
 import SmallLoader from '../../../Components/Loading/smallLoader';
+import { imageUpload } from '../../../utils/imageUpload';
 
 const Register = () => {
     const [isPending, setIsPending] = useState(false)
     const axios = useAxios()
     const { createUser, setUser, updateUserInfo, setLoading } = useAuth()
     const location = useLocation()
-    console.log(location)
     const navigate = useNavigate()
+
     const {
         register,
         handleSubmit,
@@ -49,13 +50,7 @@ const Register = () => {
 
                 const imageFile = image[0]
 
-                const formData = new FormData()
-                formData.append('image', imageFile)
-
-                // getting image url
-                const result = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`, formData)
-
-                photoURL = result.data.data.display_url
+                photoURL = await imageUpload(imageFile)
             }
 
             // setting name and image_url to update
@@ -111,7 +106,7 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-100px)] flex flex-col-reverse md:flex-row items-center justify-center px-6 gap-6 md:gap-10">
+        <div className="min-h-[calc(100vh-100px)] flex flex-col md:flex-row items-center justify-center px-6 gap-6 md:gap-10">
 
             <div className="w-full md:w-1/2 flex justify-center items-center">
                 <Lottie
