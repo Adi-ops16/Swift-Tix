@@ -118,7 +118,7 @@ async function run() {
 
         // ticket related apis
 
-        app.get('/tickets', async (req, res) => {
+        app.get('/tickets', verifyFbToken, async (req, res) => {
             try {
                 const { email } = req.query
                 const query = { vendorEmail: email }
@@ -143,7 +143,7 @@ async function run() {
             }
         })
 
-        app.patch('/tickets/update/:id', async (req, res) => {
+        app.patch('/tickets/update/:id', verifyFbToken, async (req, res) => {
             try {
                 const { id } = req.params
                 const ticketInfo = req.body;
@@ -165,7 +165,7 @@ async function run() {
             }
         })
 
-        app.delete('/tickets/delete/:id', async (req, res) => {
+        app.delete('/tickets/delete/:id', verifyFbToken, async (req, res) => {
             try {
                 const { id } = req.params;
                 const result = await ticketsCollection.deleteOne({
@@ -187,11 +187,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
-
-
-
 
 
 app.listen(port, (req, res) => {
