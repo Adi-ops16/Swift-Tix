@@ -12,11 +12,13 @@ import Profile from "../Pages/dashboard/profile/Profile";
 import VendorRoute from "./VendorRoute";
 import AddTicket from "../Pages/dashboard/add-ticket/AddTicket";
 import AddedTickets from "../Pages/dashboard/added-tickets/AddedTickets";
+import Error from "../Pages/error/Error";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         Component: MainLayout,
+        errorElement: <Error></Error>,
         children: [
             {
                 index: true,
@@ -33,6 +35,7 @@ export const router = createBrowserRouter([
     {
         path: 'auth',
         Component: AuthLayout,
+        errorElement: <Error></Error>,
         children: [
             {
                 path: 'login',
@@ -49,6 +52,7 @@ export const router = createBrowserRouter([
         element: <PrivateRoute>
             <DashboardLayout></DashboardLayout>
         </PrivateRoute>,
+        errorElement: <Error></Error>,
         children: [
             {
                 index: true,
