@@ -157,6 +157,7 @@ async function run() {
             try {
                 const ticketInfo = req.body;
                 ticketInfo.verification_status = 'pending'
+                ticketInfo.advertise = false
 
                 const result = await ticketsCollection.insertOne(ticketInfo)
 
@@ -182,6 +183,23 @@ async function run() {
                 res.status(200).json(result)
             } catch (err) {
                 res.status(500).json({ message: "Couldn't update ticket status", err })
+            }
+        })
+
+        app.patch('/tickets/advertise/:id', async (req, res) => {
+            try {
+                const { id } = req.params
+                const { advertise } = req.body
+                const query = { _id: new ObjectId(id) }
+                const updatedDoc = {
+                    $set: {
+                        advertise: advertise
+                    }
+                }
+                const result = await ticketsCollection.updateOne(query, updatedDoc)
+                return res.status(200).send(result)
+            } catch (err) {
+                res.status(500).json({ message: "Couldn't set advertise", err })
             }
         })
 
