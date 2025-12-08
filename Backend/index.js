@@ -79,11 +79,11 @@ async function run() {
             }
         })
 
-
         app.get('/', (req, res) => {
             res.send('Swift-Tix server is working')
         })
 
+        // users related api
         app.get('/users', async (req, res) => {
             try {
                 const query = {};
@@ -94,7 +94,6 @@ async function run() {
             }
         })
 
-        // users related api
         app.post('/users', async (req, res) => {
             try {
                 const user = req.body;
@@ -116,14 +115,38 @@ async function run() {
             }
         })
 
+        app.patch('/update/role', async (req, res) => {
+            try {
+                const id = req.body.id
+                const role = req.body.updatedRole
+                const query = { _id: new ObjectId(id) }
+                const updatedDoc = {
+                    $set: {
+                        role: role
+                    }
+                }
+                const result = await usersCollection.updateOne(query, updatedDoc)
+                res.status(200).send(result)
+            } catch (err) {
+                res.status(500).json({ message: "failed to remove admin", err })
+            }
+        })
+
         // ticket related apis
 
-        app.get('/tickets', verifyFbToken, async (req, res) => {
+        app.get('/tickets', async (req, res) => {
             try {
+                const { status } = req.query
                 const { email } = req.query
-                const query = { vendorEmail: email }
+                const query = {}
+                if (email) {
+                    query.vendorEmail = email
+                }
+                if (status) {
+                    query.verification_status = status
+                }
 
-                const result = await ticketsCollection.find(query).toArray()
+                const result = await ticketsCollection.find(query).sort({ _id: -1 }).toArray()
                 res.status(200).send(result)
             } catch (err) {
                 res.status(500).json({ message: "Couldn't get tickets", err })
@@ -140,6 +163,25 @@ async function run() {
                 res.send(result)
             } catch (err) {
                 res.status(500).send({ message: "Couldn't post the tickets", err })
+            }
+        })
+
+        app.patch('/tickets/status', async (req, res) => {
+            try {
+                const { id } = req.body;
+                const { status } = req.body;
+
+                const query = { _id: new ObjectId(id) };
+                const updatedDoc = {
+                    $set: {
+                        verification_status: status
+                    }
+                }
+
+                const result = await ticketsCollection.updateOne(query, updatedDoc)
+                res.status(200).json(result)
+            } catch (err) {
+                res.status(500).json({ message: "Couldn't update ticket status", err })
             }
         })
 

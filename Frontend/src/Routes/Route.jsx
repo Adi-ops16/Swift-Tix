@@ -13,6 +13,10 @@ import VendorRoute from "./VendorRoute";
 import AddTicket from "../Pages/dashboard/add-ticket/AddTicket";
 import AddedTickets from "../Pages/dashboard/added-tickets/AddedTickets";
 import Error from "../Pages/error/Error";
+import AdminRoute from "./AdminRoute";
+import ManageTickets from "../Pages/dashboard/manage-tickets/ManageTickets";
+import ManageUsers from "../Pages/dashboard/manage-users/ManageUsers";
+import AdvertiseTickets from "../Pages/dashboard/advertise-tickets/AdvertiseTickets";
 
 export const router = createBrowserRouter([
     {
@@ -61,6 +65,25 @@ export const router = createBrowserRouter([
             {
                 path: 'profile',
                 Component: Profile
+            },
+            // pages for admin
+            {
+                path: 'manage-tickets',
+                element: <AdminRoute>
+                    <ManageTickets></ManageTickets>
+                </AdminRoute>
+            },
+            {
+                path: 'manage-users',
+                element: <AdminRoute>
+                    <ManageUsers></ManageUsers>
+                </AdminRoute>
+            },
+            {
+                path: 'advertise-tickets',
+                element: <AdminRoute>
+                    <AdvertiseTickets></AdvertiseTickets>
+                </AdminRoute>
             },
             // Pages for Vendors
             {
