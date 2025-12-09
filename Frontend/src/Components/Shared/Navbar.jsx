@@ -49,7 +49,7 @@ const Navbar = () => {
     );
 
     return (
-        <div className="navbar bg-base-100 shadow-sm px-4">
+        <div className="navbar bg-base-100 shadow-sm px-4 rounded-2xl">
             {/* Left Section */}
             <div className="navbar-start">
                 {/* Mobile Menu */}

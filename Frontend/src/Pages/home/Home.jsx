@@ -1,14 +1,16 @@
 import React from 'react';
-import useRole from '../../Hooks/useRole';
+import Advertisement from './advertisement/Advertisement';
+import Banner from './banner/Banner';
+import LatestTickets from './latest-tickets/LatestTickets';
 
 const Home = () => {
 
-    const { role } = useRole()
-    console.log(role)
 
     return (
-        <div className='grid grid-cols-2 gap-5'>
-
+        <div className='max-w-7xl mx-auto'>
+            <Banner></Banner>
+            <Advertisement></Advertisement>
+            <LatestTickets></LatestTickets>
         </div>
 
     );

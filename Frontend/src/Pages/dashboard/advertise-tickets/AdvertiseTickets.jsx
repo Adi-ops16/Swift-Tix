@@ -6,6 +6,7 @@ import { FaBullhorn } from "react-icons/fa";
 import SwiftAlert from '../../../utils/alerts/SwiftAlert';
 import SwiftConfirm from '../../../utils/alerts/SwiftConfirm';
 import SmallLoader from '../../../Components/Loading/smallLoader';
+import Loading from '../../../Components/Loading/Loading';
 
 const AdvertiseTickets = () => {
     const axiosSecure = useAxiosSecure();
@@ -20,31 +21,40 @@ const AdvertiseTickets = () => {
     });
 
     const { mutateAsync } = useMutation({
-        onMutate: async () => {
+        onMutate: async ({ advertise }) => {
             const result = await SwiftConfirm({
                 title: "Are you sure?",
-                text: "you want to advertise this ticket?",
+                text: `you want to ${advertise ? "advertise" : "unadvertised"} this ticket?`,
                 icon: "info",
             })
             if (!result.isConfirmed) {
-                throw new Error("User cancelled")
+                throw { silent: true }
             }
         },
         mutationFn: async ({ id, advertise }) => {
             const res = await axiosSecure.patch(`/tickets/advertise/${id}`, { advertise });
-            return res.data;
+            const result = res.data
+            return { result, advertise }
         },
-        onSuccess: () => {
+        onSuccess: ({ advertise }) => {
             queryClient.invalidateQueries(['tickets', 'accepted'])
             SwiftAlert({
                 title: "Success",
-                text: "This ticked has been advertised"
+                text: `This ticket has been ${advertise ? "advertised" : "unadvertised"}`
             })
         },
-        onError: () => { throw { silent: true } }
+        onError: async (error) => {
+            if (error?.silent) return
+
+            SwiftAlert({
+                title: "Error",
+                text: error?.response?.data?.message || "Can't advertise more tickets",
+                icon: "error"
+            })
+        }
     });
 
-    if (isLoading) return <p className="text-center mt-10">Loading...</p>;
+    if (isLoading) return <Loading />;
 
     return (
         <div className="p-6 mx-auto">

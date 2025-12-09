@@ -119,7 +119,7 @@ const AddedTickets = () => {
                                     <div className="mt-4">
                                         <span
                                             className={`px-3 py-1 text-xs font-semibold rounded-full
-                                                ${ticket.verification_status === "approved"
+                                                ${ticket.verification_status === "accepted"
                                                     ? "bg-green-100 text-green-600"
                                                     : ticket.verification_status === "rejected"
                                                         ? "bg-red-100 text-red-600"

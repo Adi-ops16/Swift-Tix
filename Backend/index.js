@@ -49,7 +49,6 @@ const verifyFbToken = async (req, res, next) => {
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@personal-hero.gxzvpbe.mongodb.net/?appName=Personal-Hero`;
 
 
-
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -66,21 +65,45 @@ async function run() {
         const usersCollection = db.collection('users')
         const ticketsCollection = db.collection('tickets')
 
+        app.get('/', (req, res) => {
+            res.send('Swift-Tix server is working')
+        })
+
         // get role
-        app.get('/role', verifyFbToken, async (req, res) => {
+        app.get('/role', async (req, res) => {
             try {
                 const email = req.query.email
                 const query = { email: email }
-                const result = await usersCollection.findOne(query, { projection: { role: 1 } })
+                const result = await usersCollection.findOne(query, {
+                    projection: { role: 1 }
+                })
 
                 res.send({ role: result.role || 'user' })
             } catch (err) {
                 res.status(500).send({ message: "couldn't get role", err })
             }
         })
+        // advertisement api
+        app.get('/advertisement', async (req, res) => {
+            try {
+                const result = await ticketsCollection.find({
+                    verification_status: 'accepted',
+                    advertise: true
+                }).toArray()
 
-        app.get('/', (req, res) => {
-            res.send('Swift-Tix server is working')
+                res.send(result)
+            } catch (err) {
+                res.send({ message: "Could't get advertizes" })
+            }
+        })
+        // get latest tickets 
+        app.get('/latest', async (req, res) => {
+            try {
+                const result = await ticketsCollection.find().sort({ _id: -1 }).limit(6).toArray()
+                res.send(result)
+            } catch (err) {
+                res.send({ message: "Could't get latest tickets", err })
+            }
         })
 
         // users related api
@@ -190,6 +213,18 @@ async function run() {
             try {
                 const { id } = req.params
                 const { advertise } = req.body
+                console.log(advertise)
+                if (advertise) {
+                    const count = await ticketsCollection.countDocuments({ advertise: true })
+                    console.log(count)
+                    if (count > 5) {
+                        return res.status(400).json({
+                            success: false,
+                            message: "Cannot advertise more than 6 at a time"
+                        })
+                    }
+                }
+
                 const query = { _id: new ObjectId(id) }
                 const updatedDoc = {
                     $set: {
